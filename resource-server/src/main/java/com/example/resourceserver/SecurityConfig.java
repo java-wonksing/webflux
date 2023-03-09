@@ -3,6 +3,8 @@ package com.example.resourceserver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -11,6 +13,7 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
@@ -22,6 +25,14 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @RestController
 public class SecurityConfig {
+//    public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+//
+//        @Override
+//        public void onAuthenticationFailure(ServerHttpRequest httpServletRequest, ServerHttpResponse httpServletResponse, AuthenticationException e) throws IOException {
+//            httpServletResponse.sendRedirect("/customError");
+//        }
+//    }
+
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 //        http.authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
@@ -43,7 +54,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .logout().disable()
                 .authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
-                .addFilterAt(new JwtAuthenticationFilter(), SecurityWebFiltersOrder.HTTP_BASIC)
+                .addFilterAt(new JwtAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
 
     }
