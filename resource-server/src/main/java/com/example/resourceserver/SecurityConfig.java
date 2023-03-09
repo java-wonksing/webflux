@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
+import org.springframework.security.web.server.context.ServerSecurityContextRepository;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -25,13 +27,14 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @RestController
 public class SecurityConfig {
-//    public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
-//
-//        @Override
-//        public void onAuthenticationFailure(ServerHttpRequest httpServletRequest, ServerHttpResponse httpServletResponse, AuthenticationException e) throws IOException {
-//            httpServletResponse.sendRedirect("/customError");
-//        }
-//    }
+    private final String SECURITY_CONTEXT_ATTR_NAME = "spotvnow-security-context";
+    @Bean
+    public ServerSecurityContextRepository securityContextRepository() {
+        WebSessionServerSecurityContextRepository securityContextRepository
+                = new WebSessionServerSecurityContextRepository();
+        securityContextRepository.setSpringSecurityContextAttrName(SECURITY_CONTEXT_ATTR_NAME);
+        return securityContextRepository;
+    }
 
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -53,19 +56,21 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
+                .securityContextRepository(securityContextRepository())
                 .authorizeExchange(exchanges -> exchanges.anyExchange().authenticated())
                 .addFilterAt(new JwtAuthenticationFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterAt(new HistoryFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
 
     }
-    @Bean
-    public ReactiveJwtDecoder jwtDecoder() {
-        OAuth2TokenValidator<Jwt> jwtValidator = JwtValidators.createDefault();
-        String jwkSetUri = "https://authclient-dev.spotvnow.co.kr/.well-known/jwks.json";
-        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
-        jwtDecoder.setJwtValidator(jwtValidator);
-        return jwtDecoder;
-    }
+//    @Bean
+//    public ReactiveJwtDecoder jwtDecoder() {
+//        OAuth2TokenValidator<Jwt> jwtValidator = JwtValidators.createDefault();
+//        String jwkSetUri = "https://authclient-dev.spotvnow.co.kr/.well-known/jwks.json";
+//        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
+//        jwtDecoder.setJwtValidator(jwtValidator);
+//        return jwtDecoder;
+//    }
 
 //    private AuthenticationWebFilter authenticationWebFilter() {
 //        AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager());
