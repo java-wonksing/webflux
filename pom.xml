@@ -20,6 +20,7 @@
 	</properties>
 	<modules>
 		<module>demo</module>
+		<module>resource-server</module>
 	</modules>
 	<dependencies>
 	</dependencies>
