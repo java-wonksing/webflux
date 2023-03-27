@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 @RestController
@@ -51,6 +54,24 @@ public class SecurityConfig {
 //                .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt)
 //                .build();
 
+        try {
+            String salt = "sh32ye4Nd3o932Djqqdtnm4v";
+            String destStr = "dnjs!@#1";
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(destStr.getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = md.digest(salt.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                var a = (bytes[i] & 0xff);
+                System.out.println(a);
+                System.out.println(Integer.toString((bytes[i] & 0xff) + 0x100, 16));
+                System.out.println(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            System.out.println(sb.toString());
+        }catch(Exception e) {
+
+        }
         return http.headers().frameOptions().disable().and()
                 .csrf().disable()
                 .httpBasic().disable()
