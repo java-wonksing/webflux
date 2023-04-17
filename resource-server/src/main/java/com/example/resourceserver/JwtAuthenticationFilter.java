@@ -31,7 +31,8 @@ public class JwtAuthenticationFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String token = retrieveToken(exchange.getRequest());
 
-        String jwkSetUri = "https://authclient-dev.spotvnow.co.kr/.well-known/jwks.json";
+        // TODO, wonk
+        String jwkSetUri = "https://nid-dev.spotvnow.co.kr/.well-known/jwks.json";
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
         jwtDecoder.setJwtValidator(JwtValidators.createDefault());
         if (StringUtils.hasText(token)) {

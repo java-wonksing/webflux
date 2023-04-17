@@ -87,7 +87,7 @@ public class SecurityConfig {
 //    @Bean
 //    public ReactiveJwtDecoder jwtDecoder() {
 //        OAuth2TokenValidator<Jwt> jwtValidator = JwtValidators.createDefault();
-//        String jwkSetUri = "https://authclient-dev.spotvnow.co.kr/.well-known/jwks.json";
+//        String jwkSetUri = "https://nid-dev.spotvnow.co.kr/.well-known/jwks.json";
 //        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
 //        jwtDecoder.setJwtValidator(jwtValidator);
 //        return jwtDecoder;
