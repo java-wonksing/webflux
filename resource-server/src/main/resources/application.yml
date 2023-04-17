@@ -5,14 +5,4 @@ logging:
       springframework:
         web: DEBUG
         security: DEBUG
-
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwk:
-#          issuer-uri: https://authclient-dev.spotvnow.co.kr
-          key-set-uri: https://authclient-dev.spotvnow.co.kr/.well-known/jwks.json
-
-#      resourceserver:
-#        jwk-set-uri: https://authclient-dev.spotvnow.co.kr/.well-known/jwks.json
+    com: DEBUG
